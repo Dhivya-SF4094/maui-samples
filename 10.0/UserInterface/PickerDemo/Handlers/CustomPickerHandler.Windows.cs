@@ -18,15 +18,23 @@ public partial class CustomPickerHandler : PickerHandler
         {
             var dialogBackgroundColor = ConvertToWinColor(customPicker.DialogBackgroundColor);
             var textColor = ConvertToWinColor(customPicker.DialogTextColor);
+            var selectedItemTextColor = ConvertToWinColor(customPicker.SelectedItemTextColor);
 
             // Apply same colors to dropdown items
             var itemStyle = new Microsoft.UI.Xaml.Style(typeof(ComboBoxItem));
-            itemStyle.Setters.Add(new Microsoft.UI.Xaml.Setter(ComboBoxItem.BackgroundProperty, new Microsoft.UI.Xaml.Media.SolidColorBrush(dialogBackgroundColor)));
-            itemStyle.Setters.Add(new Microsoft.UI.Xaml.Setter(ComboBoxItem.ForegroundProperty, new Microsoft.UI.Xaml.Media.SolidColorBrush(textColor)));
 
-            comboBox.Resources.Add(typeof(ComboBoxItem), itemStyle);
+            itemStyle.Setters.Add(new Microsoft.UI.Xaml.Setter(ComboBoxItem.BackgroundProperty, new SolidColorBrush(dialogBackgroundColor)));
+            itemStyle.Setters.Add(new Microsoft.UI.Xaml.Setter(ComboBoxItem.ForegroundProperty, new SolidColorBrush(textColor)));
+
+            // Create resource dictionary for selected item colors
+            var selectedForegroundBrush = new SolidColorBrush(selectedItemTextColor);
+
+            // Add custom resources that will be used for selected state
+            comboBox.Resources["ComboBoxItemForegroundSelected"] = selectedForegroundBrush;
+
+            comboBox.Resources[typeof(ComboBoxItem)] = itemStyle;
+
         }
-
         return comboBox;
     }
 
