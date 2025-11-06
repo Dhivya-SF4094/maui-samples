@@ -24,7 +24,7 @@ public partial class CustomPickerHandler : PickerHandler
     }
 
     [UnconditionalSuppressMessage("AOT", "IL2070:UnrecognizedReflectionPattern", Justification = "The _dialog field is internal to PickerHandler and preserved by MAUI framework")]
-    private static System.Reflection.FieldInfo? GetDialogField()
+    static System.Reflection.FieldInfo? GetDialogField()
     {
         return typeof(PickerHandler).GetField("_dialog",
             System.Reflection.BindingFlags.NonPublic |

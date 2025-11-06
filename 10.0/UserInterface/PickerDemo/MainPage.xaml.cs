@@ -6,4 +6,11 @@ public partial class MainPage : ContentPage
     {
         InitializeComponent();
     }
+
+    private void Button_Clicked(object sender, EventArgs e)
+    {
+        BasicCountryPicker.DialogBackgroundColor = Colors.LightBlue;
+        BasicCountryPicker.DialogTextColor = Colors.Blue;
+        BasicCountryPicker.SelectedItemTextColor = Colors.YellowGreen;
+    }
 }

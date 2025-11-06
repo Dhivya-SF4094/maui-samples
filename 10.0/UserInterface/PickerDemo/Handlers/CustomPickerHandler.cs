@@ -9,7 +9,11 @@ public partial class CustomPickerHandler : PickerHandler, IElementHandler
     public static IPropertyMapper<CustomPicker, CustomPickerHandler> CustomMapper { get; } =
         new PropertyMapper<CustomPicker, CustomPickerHandler>(PickerHandler.Mapper)
         {
-            // Add any custom property mappings if needed
+#if IOS || WINDOWS
+            [nameof(CustomPicker.DialogBackgroundColor)] = MapDialogBackgroundColor,
+            [nameof(CustomPicker.DialogTextColor)] = MapDialogTextColor,
+            [nameof(CustomPicker.SelectedItemTextColor)] = MapSelectedItemTextColor
+#endif
         };
 
     public CustomPickerHandler() : base(CustomMapper)

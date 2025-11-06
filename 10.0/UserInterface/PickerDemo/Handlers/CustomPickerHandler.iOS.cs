@@ -12,25 +12,46 @@ public partial class CustomPickerHandler : PickerHandler
     CustomPicker? _customPicker;
 #endif
 
+    public static void MapDialogBackgroundColor(CustomPickerHandler handler, CustomPicker picker)
+    {
+#if IOS
+        if (handler.PlatformView?.InputView is UIPickerView pickerView)
+        {
+            pickerView.BackgroundColor = picker.DialogBackgroundColor.ToPlatform();
+        }
+#endif
+    }
+
+    public static void MapDialogTextColor(CustomPickerHandler handler, CustomPicker picker)
+    {
+    }
+
+    public static void MapSelectedItemTextColor(CustomPickerHandler handler, CustomPicker picker)
+    {
+#if IOS
+        if (handler.PlatformView?.InputView is UIPickerView pickerView)
+        {
+            pickerView.ReloadAllComponents();
+        }
+#endif
+    }
+
     protected override MauiPicker CreatePlatformView()
     {
         var platformView = base.CreatePlatformView();
-        if (VirtualView is CustomPicker customPicker)
-        {
+        if (VirtualView is not CustomPicker customPicker)
+            return platformView;
+
 #if IOS
-            if (platformView.InputView is UIPickerView pickerView)
-            {
-                pickerView.BackgroundColor = customPicker.DialogBackgroundColor.ToPlatform();
-                pickerView.Delegate = new CustomPickerViewDelegate(
-                    customPicker.DialogTextColor.ToPlatform(),
-                    pickerView,
-                    customPicker);
-                pickerView.ReloadAllComponents();
-            }
-#elif MACCATALYST
-            _customPicker = customPicker;
-#endif
+        if (platformView.InputView is UIPickerView pickerView)
+        {
+            pickerView.BackgroundColor = customPicker.DialogBackgroundColor.ToPlatform();
+            pickerView.Delegate = new CustomPickerViewDelegate(pickerView, customPicker);
+            pickerView.ReloadAllComponents();
         }
+#elif MACCATALYST
+        _customPicker = customPicker;
+#endif
 
         return platformView;
     }
@@ -39,8 +60,6 @@ public partial class CustomPickerHandler : PickerHandler
     protected override void ConnectHandler(MauiPicker platformView)
     {
         base.ConnectHandler(platformView);
-
-        // Hook into the Started event only once
         platformView.Started += OnPickerStarted;
     }
 
@@ -52,43 +71,34 @@ public partial class CustomPickerHandler : PickerHandler
 
     void OnPickerStarted(object? sender, EventArgs e)
     {
-        if (_customPicker != null)
+        if (_customPicker is null)
+            return;
+
+        MainThread.BeginInvokeOnMainThread(async () =>
         {
-            // Add a small delay to ensure the UIAlertController is fully presented
-            MainThread.BeginInvokeOnMainThread(async () =>
-            {
-                await Task.Delay(100);
-                FindAndCustomizeAlertController(_customPicker);
-            });
-        }
+            await Task.Delay(100);
+            FindAndCustomizeAlertController(_customPicker);
+        });
     }
 
     void FindAndCustomizeAlertController(CustomPicker customPicker)
     {
-        var connectedScenes = UIApplication.SharedApplication.ConnectedScenes;
-        foreach (var scene in connectedScenes.OfType<UIWindowScene>())
+        var alertController = UIApplication.SharedApplication.ConnectedScenes
+            .OfType<UIWindowScene>()
+            .SelectMany(scene => scene.Windows)
+            .Select(w => w.RootViewController?.PresentedViewController)
+            .OfType<UIAlertController>()
+            .FirstOrDefault(ac => ac.View != null);
+
+        if (alertController?.View is null)
+            return;
+
+        alertController.View.BackgroundColor = customPicker.DialogBackgroundColor.ToPlatform();
+
+        var pickerView = alertController.View.Subviews.OfType<UIPickerView>().LastOrDefault();
+        if (pickerView is not null)
         {
-            var alertController = scene.Windows
-                .Select(w => w.RootViewController?.PresentedViewController)
-                .OfType<UIAlertController>()
-                .FirstOrDefault();
-
-            if (alertController?.View != null)
-            {
-
-                alertController.View.BackgroundColor = customPicker.DialogBackgroundColor.ToPlatform();
-
-                var pickerView = alertController.View.Subviews.OfType<UIPickerView>().LastOrDefault();
-                //  pickerView.selected
-                if (pickerView != null)
-                {
-                    pickerView.Delegate = new CustomPickerViewDelegate(
-                        customPicker.DialogTextColor.ToPlatform(),
-                        pickerView,
-                        customPicker);
-                }
-                break;
-            }
+            pickerView.Delegate = new CustomPickerViewDelegate(pickerView, customPicker);
         }
     }
 #endif
@@ -96,14 +106,12 @@ public partial class CustomPickerHandler : PickerHandler
 
 public class CustomPickerViewDelegate : UIPickerViewDelegate
 {
-    private readonly UIColor _textColor;
     private readonly UIPickerView _pickerView;
     private readonly CustomPicker _customPicker;
     private readonly IUIPickerViewDelegate? _originalDelegate;
 
-    public CustomPickerViewDelegate(UIColor textColor, UIPickerView pickerView, CustomPicker customPicker)
+    public CustomPickerViewDelegate(UIPickerView pickerView, CustomPicker customPicker)
     {
-        _textColor = textColor;
         _pickerView = pickerView;
         _customPicker = customPicker;
         _originalDelegate = pickerView.Delegate;
@@ -113,19 +121,19 @@ public class CustomPickerViewDelegate : UIPickerViewDelegate
     {
         var title = _pickerView.Model?.GetTitle(pickerView, row, component) ?? string.Empty;
         var selectedRow = pickerView.SelectedRowInComponent(component);
-        var SelectedTextColor = (row == selectedRow) ? _customPicker.SelectedItemTextColor.ToPlatform() : _customPicker.DialogTextColor.ToPlatform();
+        var textColor = row == selectedRow
+            ? _customPicker.SelectedItemTextColor.ToPlatform()
+            : _customPicker.DialogTextColor.ToPlatform();
+
         return new NSAttributedString(title, new UIStringAttributes
         {
-            ForegroundColor = SelectedTextColor,
+            ForegroundColor = textColor,
         });
     }
 
     public override void Selected(UIPickerView pickerView, nint row, nint component)
     {
-        // Call the original delegate's Selected method to ensure proper state management
         _originalDelegate?.Selected(pickerView, row, component);
-
-        // Reload all components to update the background and text colors for all rows
         pickerView.ReloadAllComponents();
     }
 }
