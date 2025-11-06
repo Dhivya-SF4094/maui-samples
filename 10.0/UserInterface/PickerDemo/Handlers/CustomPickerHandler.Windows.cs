@@ -36,7 +36,7 @@ public partial class CustomPickerHandler : PickerHandler
         }
     }
 
-    public static void MapSelectedItemTextColor(CustomPickerHandler handler, CustomPicker picker)
+    public static void MapSelectedTextColor(CustomPickerHandler handler, CustomPicker picker)
     {
         if (handler.PlatformView is ComboBox comboBox)
         {
@@ -48,7 +48,7 @@ public partial class CustomPickerHandler : PickerHandler
     {
         var dialogBackgroundColor = ConvertToWinColor(picker.DialogBackgroundColor);
         var textColor = ConvertToWinColor(picker.DialogTextColor);
-        var selectedItemTextColor = ConvertToWinColor(picker.SelectedItemTextColor);
+        var SelectedTextColor = ConvertToWinColor(picker.SelectedTextColor);
 
         // Apply same colors to dropdown items
         var itemStyle = new Microsoft.UI.Xaml.Style(typeof(ComboBoxItem));
@@ -57,7 +57,7 @@ public partial class CustomPickerHandler : PickerHandler
         itemStyle.Setters.Add(new Microsoft.UI.Xaml.Setter(ComboBoxItem.ForegroundProperty, new SolidColorBrush(textColor)));
 
         // Create resource dictionary for selected item colors
-        var selectedForegroundBrush = new SolidColorBrush(selectedItemTextColor);
+        var selectedForegroundBrush = new SolidColorBrush(SelectedTextColor);
 
         // Add custom resources that will be used for selected state
         comboBox.Resources["ComboBoxItemForegroundSelected"] = selectedForegroundBrush;

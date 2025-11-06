@@ -12,7 +12,7 @@ public partial class CustomPickerHandler : PickerHandler, IElementHandler
 #if IOS || WINDOWS
             [nameof(CustomPicker.DialogBackgroundColor)] = MapDialogBackgroundColor,
             [nameof(CustomPicker.DialogTextColor)] = MapDialogTextColor,
-            [nameof(CustomPicker.SelectedItemTextColor)] = MapSelectedItemTextColor
+            [nameof(CustomPicker.SelectedTextColor)] = MapSelectedTextColor
 #endif
         };
 

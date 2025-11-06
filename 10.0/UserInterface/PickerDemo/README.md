@@ -10,7 +10,7 @@ This sample features a `CustomPicker` control that extends the standard MAUI `Pi
 
 - **DialogBackgroundColor**: Customizes the background color of the picker dialog/dropdown
 - **DialogTextColor**: Customizes the text color of unselected items in the dialog
-- **SelectedItemTextColor**: Customizes the text color of the currently selected item in the dialog
+- **SelectedTextColor**: Customizes the text color of the currently selected item in the dialog
 
 ### Platform-Specific Implementations
 
@@ -31,11 +31,11 @@ public class CustomPicker : Picker, ICustomPicker
 {
     public static readonly BindableProperty DialogBackgroundColorProperty = ...
     public static readonly BindableProperty DialogTextColorProperty = ...
-    public static readonly BindableProperty SelectedItemTextColorProperty = ...
+    public static readonly BindableProperty SelectedTextColorProperty = ...
 
     public Color DialogBackgroundColor { get; set; }
     public Color DialogTextColor { get; set; }
-    public Color SelectedItemTextColor { get; set; }
+    public Color SelectedTextColor { get; set; }
 }
 ```
 
@@ -43,10 +43,10 @@ public class CustomPicker : Picker, ICustomPicker
 
 ```xml
 <controls:CustomPicker
-    x:Name="BasicCountryPicker"
+    x:Name="picker"
     Title="Choose Country"
     BackgroundColor="Red"
-    SelectedItemTextColor="DarkOrange"
+    SelectedTextColor="DarkOrange"
     DialogBackgroundColor="Pink"
     DialogTextColor="DarkGreen"
     FontSize="16">

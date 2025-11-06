@@ -10,13 +10,13 @@ public class CustomPicker : Picker, ICustomPicker
     public static readonly BindableProperty DialogTextColorProperty =
         BindableProperty.Create(nameof(DialogTextColor), typeof(Color), typeof(CustomPicker), Colors.Black);
 
-    public static readonly BindableProperty SelectedItemTextColorProperty =
-            BindableProperty.Create(nameof(SelectedItemTextColor), typeof(Color), typeof(CustomPicker), Colors.Black);
+    public static readonly BindableProperty SelectedTextColorProperty =
+            BindableProperty.Create(nameof(SelectedTextColor), typeof(Color), typeof(CustomPicker), Colors.Black);
 
-    public Color SelectedItemTextColor
+    public Color SelectedTextColor
     {
-        get => (Color)GetValue(SelectedItemTextColorProperty);
-        set => SetValue(SelectedItemTextColorProperty, value);
+        get => (Color)GetValue(SelectedTextColorProperty);
+        set => SetValue(SelectedTextColorProperty, value);
     }
 
     public Color DialogBackgroundColor

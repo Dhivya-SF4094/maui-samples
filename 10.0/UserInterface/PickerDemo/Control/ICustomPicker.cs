@@ -4,5 +4,5 @@ public interface ICustomPicker
 {
     Color DialogBackgroundColor { get; }
     Color DialogTextColor { get; }
-    Color SelectedItemTextColor { get; }
+    Color SelectedTextColor { get; }
 }

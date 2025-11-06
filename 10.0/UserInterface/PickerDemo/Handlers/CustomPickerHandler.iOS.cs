@@ -26,7 +26,7 @@ public partial class CustomPickerHandler : PickerHandler
     {
     }
 
-    public static void MapSelectedItemTextColor(CustomPickerHandler handler, CustomPicker picker)
+    public static void MapSelectedTextColor(CustomPickerHandler handler, CustomPicker picker)
     {
 #if IOS
         if (handler.PlatformView?.InputView is UIPickerView pickerView)
@@ -122,7 +122,7 @@ public class CustomPickerViewDelegate : UIPickerViewDelegate
         var title = _pickerView.Model?.GetTitle(pickerView, row, component) ?? string.Empty;
         var selectedRow = pickerView.SelectedRowInComponent(component);
         var textColor = row == selectedRow
-            ? _customPicker.SelectedItemTextColor.ToPlatform()
+            ? _customPicker.SelectedTextColor.ToPlatform()
             : _customPicker.DialogTextColor.ToPlatform();
 
         return new NSAttributedString(title, new UIStringAttributes

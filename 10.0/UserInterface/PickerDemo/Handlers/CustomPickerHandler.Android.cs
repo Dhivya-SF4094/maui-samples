@@ -11,6 +11,7 @@ namespace PickerDemo.Handlers;
 
 public partial class CustomPickerHandler : PickerHandler
 {
+    // TODO: Refactor to avoid reflection if MAUI framework exposes dialog customization in future.
     private System.Reflection.FieldInfo? _dialogFieldInfo;
 
     protected override void ConnectHandler(MauiPicker platformView)
@@ -77,7 +78,7 @@ public partial class CustomPickerHandler : PickerHandler
                             if (isSelected)
                             {
                                 // Apply selected item colors
-                                textView.SetTextColor(customPicker.SelectedItemTextColor.ToPlatform());
+                                textView.SetTextColor(customPicker.SelectedTextColor.ToPlatform());
                             }
                             else
                             {
