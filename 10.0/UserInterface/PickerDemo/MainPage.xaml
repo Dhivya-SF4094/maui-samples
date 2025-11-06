@@ -8,7 +8,7 @@
     <ContentPage.Resources>
         <Style TargetType="controls:CustomPicker">
             <Setter Property="DialogBackgroundColor"
-                    Value="{AppThemeBinding Light=#9880e5, Dark=#121212}"/>
+                    Value="{AppThemeBinding Light=#9880e5, Dark=#404040}"/>
             <Setter Property="DialogTextColor"
                     Value="{AppThemeBinding Light=#FF170453, Dark=#FFFFFF}"/>
             <Setter Property="SelectedTextColor"
