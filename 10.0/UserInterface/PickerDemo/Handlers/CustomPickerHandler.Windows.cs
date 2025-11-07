@@ -1,10 +1,9 @@
 using Microsoft.Maui.Handlers;
-using Microsoft.Maui.Platform;
-using MauiColor = Microsoft.Maui.Graphics.Color;
-
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
 using WinColor = Windows.UI.Color;
+using PickerDemo.Control;
+using MauiColor = Microsoft.Maui.Graphics.Color;
+using SolidColorBrush = Microsoft.UI.Xaml.Media.SolidColorBrush;
 
 namespace PickerDemo.Handlers;
 
