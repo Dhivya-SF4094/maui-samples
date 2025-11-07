@@ -39,7 +39,7 @@ public partial class CustomPickerHandler : PickerHandler
 #if IOS
         if (handler.PlatformView.InputView is UIPickerView pickerView)
         {
-            pickerView.BackgroundColor = picker.DialogBackgroundColor?.ToPlatform();
+            pickerView.BackgroundColor = picker.DialogBackgroundColor?.ToPlatform() ?? UIColor.SystemBackground;
         }
 #endif
     }
@@ -79,7 +79,7 @@ public partial class CustomPickerHandler : PickerHandler
         if (platformView.InputView is not UIPickerView pickerView)
             return;
 
-        pickerView.BackgroundColor = customPicker.DialogBackgroundColor?.ToPlatform();
+        pickerView.BackgroundColor = customPicker.DialogBackgroundColor?.ToPlatform() ?? UIColor.SystemBackground;
 
         // Set custom delegate to enable text color customization via GetAttributedTitle
         pickerView.Delegate = new CustomPickerViewDelegate(pickerView, customPicker);
@@ -136,7 +136,7 @@ public partial class CustomPickerHandler : PickerHandler
             return;
 
         // Apply background color to the alert view
-        alertController.View.BackgroundColor = customPicker.DialogBackgroundColor?.ToPlatform();
+        alertController.View.BackgroundColor = customPicker.DialogBackgroundColor?.ToPlatform() ?? UIColor.SystemBackground;
 
         // Find and customize the picker view within the alert
         var pickerView = alertController.View.Subviews.OfType<UIPickerView>().LastOrDefault();
@@ -174,7 +174,7 @@ public sealed class CustomPickerViewDelegate : UIPickerViewDelegate
 
         // Determine text color based on whether this row is selected
         var textColor = row == selectedRow
-            ? _customPicker.SelectedTextColor?.ToPlatform() ?? UIColor.Label
+            ? _customPicker.SelectedTextColor?.ToPlatform() ?? UIColor.SystemBlue
             : _customPicker.DialogTextColor?.ToPlatform() ?? UIColor.Label;
 
         return new NSAttributedString(title, new UIStringAttributes

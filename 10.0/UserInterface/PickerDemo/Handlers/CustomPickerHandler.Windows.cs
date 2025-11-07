@@ -45,21 +45,31 @@ public partial class CustomPickerHandler : PickerHandler
 
     static void UpdateComboBoxStyle(ComboBox comboBox, CustomPicker picker)
     {
-        var dialogBackgroundColor = ConvertToWinColor(picker.DialogBackgroundColor);
-        var textColor = ConvertToWinColor(picker.DialogTextColor);
-        var SelectedTextColor = ConvertToWinColor(picker.SelectedTextColor);
-
         // Apply same colors to dropdown items
         var itemStyle = new Microsoft.UI.Xaml.Style(typeof(ComboBoxItem));
 
-        itemStyle.Setters.Add(new Microsoft.UI.Xaml.Setter(ComboBoxItem.BackgroundProperty, new SolidColorBrush(dialogBackgroundColor)));
-        itemStyle.Setters.Add(new Microsoft.UI.Xaml.Setter(ComboBoxItem.ForegroundProperty, new SolidColorBrush(textColor)));
+        // Apply dialog background color if provided
+        if (picker.DialogBackgroundColor is not null)
+        {
+            var dialogBackgroundColor = ConvertToWinColor(picker.DialogBackgroundColor);
+            itemStyle.Setters.Add(new Microsoft.UI.Xaml.Setter(ComboBoxItem.BackgroundProperty, new SolidColorBrush(dialogBackgroundColor)));
+        }
 
-        // Create resource dictionary for selected item colors
-        var selectedForegroundBrush = new SolidColorBrush(SelectedTextColor);
+        // Apply dialog text color if provided
+        if (picker.DialogTextColor is not null)
+        {
+            var textColor = ConvertToWinColor(picker.DialogTextColor);
+            itemStyle.Setters.Add(new Microsoft.UI.Xaml.Setter(ComboBoxItem.ForegroundProperty, new SolidColorBrush(textColor)));
+        }
 
-        // Add custom resources that will be used for selected state
-        comboBox.Resources["ComboBoxItemForegroundSelected"] = selectedForegroundBrush;
+        // Apply selected text color if provided
+        if (picker.SelectedTextColor is not null)
+        {
+            var selectedTextColor = ConvertToWinColor(picker.SelectedTextColor);
+            var selectedForegroundBrush = new SolidColorBrush(selectedTextColor);
+            // Add custom resources that will be used for selected state
+            comboBox.Resources["ComboBoxItemForegroundSelected"] = selectedForegroundBrush;
+        }
 
         comboBox.Resources[typeof(ComboBoxItem)] = itemStyle;
     }

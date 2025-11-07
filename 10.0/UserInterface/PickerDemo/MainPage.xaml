@@ -34,8 +34,8 @@
             Title="Choose Country"
             DialogBackgroundColor="{AppThemeBinding Light=#9880e5, Dark=#404040}"
             DialogTextColor="{AppThemeBinding Light=#FF170453, Dark=#FFFFFF}"
-            SelectedTextColor="{AppThemeBinding Light=#FFF7EE68, Dark=#4A9EFF}"
-            TextColor="{AppThemeBinding Light=Black, Dark=White}"
+            SelectedTextColor="{AppThemeBinding Light=#FFF4F017, Dark=#2B0B98}"
+            TextColor="{AppThemeBinding Light=#0D0D0D, Dark=#F2F2F2}"
             FontSize="16">
             <Picker.Items>
                 <x:String>United States</x:String>
