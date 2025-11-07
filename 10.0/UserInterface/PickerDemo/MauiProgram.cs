@@ -7,7 +7,6 @@ using PickerDemo.Control;
 using PickerDemo.Handlers;
 using Fonts;
 
-
 namespace PickerDemo;
 
 public static class MauiProgram

@@ -5,31 +5,17 @@
              xmlns:local="clr-namespace:PickerDemo"
              xmlns:sf="clr-namespace:Syncfusion.Maui.Toolkit.SegmentedControl;assembly=Syncfusion.Maui.Toolkit"
              xmlns:controls="clr-namespace:PickerDemo.Control">
-    <ContentPage.Resources>
-        <Style TargetType="controls:CustomPicker">
-            <Setter Property="DialogBackgroundColor"
-                    Value="{AppThemeBinding Light=#9880e5, Dark=#404040}"/>
-            <Setter Property="DialogTextColor"
-                    Value="{AppThemeBinding Light=#FF170453, Dark=#FFFFFF}"/>
-            <Setter Property="SelectedTextColor"
-                    Value="{AppThemeBinding Light=#FFF7EE68, Dark=#4A9EFF}"/>
-        </Style>
-    </ContentPage.Resources>
     <VerticalStackLayout Spacing="20"
                          Padding="20">
         <Grid HorizontalOptions="End">
             <sf:SfSegmentedControl x:Name="ThemeSegmentedControl"
-                                   VerticalOptions="Center"
-                                   HorizontalOptions="Center"
                                    SelectionChanged="SfSegmentedControl_SelectionChanged"
                                    SegmentWidth="40"
                                    SegmentHeight="40">
                 <sf:SfSegmentedControl.ItemsSource>
                     <x:Array Type="{x:Type sf:SfSegmentItem}">
-                        <sf:SfSegmentItem ImageSource="{StaticResource IconLight}"
-                                          SemanticProperties.Description="Light mode"/>
-                        <sf:SfSegmentItem ImageSource="{StaticResource IconDark}"
-                                          SemanticProperties.Description="Dark mode"/>
+                        <sf:SfSegmentItem ImageSource="{StaticResource IconLight}"/>
+                        <sf:SfSegmentItem ImageSource="{StaticResource IconDark}"/>
                     </x:Array>
                 </sf:SfSegmentedControl.ItemsSource>
             </sf:SfSegmentedControl>
@@ -46,6 +32,10 @@
         <controls:CustomPicker
             x:Name="picker"
             Title="Choose Country"
+            DialogBackgroundColor="{AppThemeBinding Light=#9880e5, Dark=#404040}"
+            DialogTextColor="{AppThemeBinding Light=#FF170453, Dark=#FFFFFF}"
+            SelectedTextColor="{AppThemeBinding Light=#FFF7EE68, Dark=#4A9EFF}"
+            TextColor="{AppThemeBinding Light=Black, Dark=White}"
             FontSize="16">
             <Picker.Items>
                 <x:String>United States</x:String>

@@ -5,13 +5,13 @@ namespace PickerDemo.Control;
 public class CustomPicker : Picker, ICustomPicker
 {
     public static readonly BindableProperty DialogBackgroundColorProperty =
-  BindableProperty.Create(nameof(DialogBackgroundColor), typeof(Color), typeof(CustomPicker), Colors.White);
+  BindableProperty.Create(nameof(DialogBackgroundColor), typeof(Color), typeof(CustomPicker), null);
 
     public static readonly BindableProperty DialogTextColorProperty =
-        BindableProperty.Create(nameof(DialogTextColor), typeof(Color), typeof(CustomPicker), Colors.Black);
+        BindableProperty.Create(nameof(DialogTextColor), typeof(Color), typeof(CustomPicker), null);
 
     public static readonly BindableProperty SelectedTextColorProperty =
-            BindableProperty.Create(nameof(SelectedTextColor), typeof(Color), typeof(CustomPicker), Colors.Black);
+            BindableProperty.Create(nameof(SelectedTextColor), typeof(Color), typeof(CustomPicker), null);
 
     public Color SelectedTextColor
     {

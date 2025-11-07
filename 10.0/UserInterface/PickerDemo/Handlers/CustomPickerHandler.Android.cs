@@ -1,18 +1,19 @@
+using System.Reflection;
 using Microsoft.Maui.Handlers;
 using Android.Widget;
-using Android.Content;
 using AppCompatAlertDialog = AndroidX.AppCompat.App.AlertDialog;
 using MauiPicker = Microsoft.Maui.Platform.MauiPicker;
 using PickerDemo.Control;
 using Microsoft.Maui.Platform;
-using System.Diagnostics.CodeAnalysis;
+using AndroidView = Android.Views.View;
+using AndroidViewGroup = Android.Views.ViewGroup;
 
 namespace PickerDemo.Handlers;
 
 public partial class CustomPickerHandler : PickerHandler
 {
     // TODO: Refactor to avoid reflection if MAUI framework exposes dialog customization in future.
-    private System.Reflection.FieldInfo? _dialogFieldInfo;
+    private FieldInfo? _dialogFieldInfo;
 
     protected override void ConnectHandler(MauiPicker platformView)
     {
@@ -24,12 +25,11 @@ public partial class CustomPickerHandler : PickerHandler
         platformView.Click += OnCustomizeDialog;
     }
 
-    [UnconditionalSuppressMessage("AOT", "IL2070:UnrecognizedReflectionPattern", Justification = "The _dialog field is internal to PickerHandler and preserved by MAUI framework")]
-    static System.Reflection.FieldInfo? GetDialogField()
+    static FieldInfo? GetDialogField()
     {
         return typeof(PickerHandler).GetField("_dialog",
-            System.Reflection.BindingFlags.NonPublic |
-            System.Reflection.BindingFlags.Instance);
+            BindingFlags.NonPublic |
+            BindingFlags.Instance);
     }
 
     protected override void DisconnectHandler(MauiPicker platformView)
@@ -48,54 +48,85 @@ public partial class CustomPickerHandler : PickerHandler
         // Get dialog via reflection (unavoidable without framework changes)
         var dialog = _dialogFieldInfo?.GetValue(this) as AppCompatAlertDialog;
 
-        // Apply background color
-        if (dialog?.Window != null && customPicker.DialogBackgroundColor != null)
+        // Apply background color to the dialog window
+        if (dialog?.Window is not null && customPicker.DialogBackgroundColor is not null)
         {
             dialog.Window.SetBackgroundDrawable(new Android.Graphics.Drawables.ColorDrawable(customPicker.DialogBackgroundColor.ToPlatform()));
         }
 
         var dialogListView = dialog?.ListView;
-
-        // Set adapter to ensure proper item layout
-        if (dialogListView != null && Context != null)
+        if (dialogListView?.Adapter is not null)
         {
-            var alertDialogLayout = Context.Resources?.GetIdentifier("select_dialog_singlechoice_material", "layout", "android") ?? 0;
-            dialogListView.ChoiceMode = Android.Widget.ChoiceMode.Single;
+            // Wrap the original adapter with custom adapter
+            var customAdapter = new ColoredPickerAdapter(
+                dialogListView.Adapter,
+                customPicker.DialogTextColor,
+                customPicker.SelectedTextColor,
+                VirtualView?.SelectedIndex ?? -1);
 
-            // Apply text color customization
-            dialogListView.ViewTreeObserver?.AddOnGlobalLayoutListener(
-                new GlobalLayoutListener(() =>
-                {
-                    var selectedPosition = VirtualView?.SelectedIndex ?? -1;
-
-                    for (int i = 0; i < dialogListView.ChildCount; i++)
-                    {
-                        if (dialogListView.GetChildAt(i) is Android.Widget.CheckedTextView textView)
-                        {
-                            // Determine if this is the selected item
-                            var isSelected = (dialogListView.FirstVisiblePosition + i) == selectedPosition;
-
-                            if (isSelected)
-                            {
-                                // Apply selected item colors
-                                textView.SetTextColor(customPicker.SelectedTextColor.ToPlatform());
-                            }
-                            else
-                            {
-                                // Apply regular text color
-                                textView.SetTextColor(customPicker.DialogTextColor.ToPlatform());
-                            }
-                        }
-                    }
-                }));
+            // Set the custom adapter - this ensures GetView() is called for each item
+            dialogListView.Adapter = customAdapter;
+            if (VirtualView?.SelectedIndex >= 0)
+            {
+                dialogListView.SetItemChecked(VirtualView.SelectedIndex, true);
+            }
         }
     }
 }
 
-public class GlobalLayoutListener : Java.Lang.Object,
-    Android.Views.ViewTreeObserver.IOnGlobalLayoutListener
+/// <summary>
+/// Custom adapter that wraps the original picker adapter and applies custom text colors.
+/// This ensures colors are applied during view creation.
+/// </summary>
+internal class ColoredPickerAdapter : BaseAdapter
 {
-    private readonly Action _action;
-    public GlobalLayoutListener(Action action) => _action = action;
-    public void OnGlobalLayout() => _action?.Invoke();
+    private readonly IListAdapter _baseAdapter;
+    private readonly Color? _textColor;
+    private readonly Color? _selectedTextColor;
+    private readonly int _selectedPosition;
+
+    public ColoredPickerAdapter(
+        IListAdapter baseAdapter,
+        Color? textColor,
+        Color? selectedTextColor,
+        int selectedPosition)
+    {
+        _baseAdapter = baseAdapter ?? throw new ArgumentNullException(nameof(baseAdapter));
+        _textColor = textColor;
+        _selectedTextColor = selectedTextColor;
+        _selectedPosition = selectedPosition;
+    }
+
+    // Return the total number of items from the original adapter
+    public override int Count => _baseAdapter.Count;
+
+    // Return the data item at the specified position
+    public override Java.Lang.Object? GetItem(int position) => _baseAdapter.GetItem(position);
+
+    // Return the unique identifier for the item at the specified position
+    public override long GetItemId(int position) => _baseAdapter.GetItemId(position);
+
+    public override AndroidView? GetView(int position, AndroidView? convertView, AndroidViewGroup? parent)
+    {
+        // Get the view from the original adapter.
+        var view = _baseAdapter.GetView(position, convertView, parent);
+
+        // Customize the view if it's a CheckedTextView
+        if (view is CheckedTextView textView)
+        {
+            var isSelected = position == _selectedPosition;
+
+            // Set the checked state for the radio button indicator
+            textView.Checked = isSelected;
+
+            // Apply the appropriate text color based on selection state
+            var color = isSelected ? _selectedTextColor : _textColor;
+            if (color is not null)
+            {
+                textView.SetTextColor(color.ToPlatform());
+            }
+        }
+
+        return view;
+    }
 }
