@@ -116,9 +116,6 @@ internal class ColoredPickerAdapter : BaseAdapter
         {
             var isSelected = position == _selectedPosition;
 
-            // Set the checked state for the radio button indicator
-            textView.Checked = isSelected;
-
             // Apply the appropriate text color based on selection state
             var color = isSelected ? _selectedTextColor : _textColor;
             if (color is not null)
