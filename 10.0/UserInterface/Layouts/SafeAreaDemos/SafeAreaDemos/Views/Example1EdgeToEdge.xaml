@@ -3,28 +3,49 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SafeAreaDemos.Views.Example1EdgeToEdge"
              SafeAreaEdges="None"
-             Title="Edge-to-Edge Content">
-    <Grid SafeAreaEdges="None">
-        <Image Source="dotnet_bot.png" 
-               Aspect="AspectFill" />
-        
-        <!-- Semi-transparent background for better text readability -->
-        <BoxView Color="Black"
-                 Opacity="0.7"
-                 VerticalOptions="End"
-                 HeightRequest="180"/>
-        
-        <VerticalStackLayout Padding="30"
-                             Spacing="10"
-                             VerticalOptions="End">
-            <Label Text="Edge-to-Edge Content"
-                   TextColor="White"
-                   FontSize="28"
-                   FontAttributes="Bold" />
-            <Label Text="This content extends behind system bars and notches, creating an immersive full-screen experience."
-                   TextColor="White"
-                   FontSize="18"
-                   LineBreakMode="WordWrap" />
-        </VerticalStackLayout>
-    </Grid>
+             Shell.NavBarIsVisible="False">
+
+       <Grid SafeAreaEdges="None"
+             RowDefinitions="Auto, Auto,*,Auto">
+              <Label Text="SafeArea(None) Edge-to-Edge Content"
+                     Grid.Row="0"
+                     BackgroundColor="LightGreen"
+                     FontSize="28"
+                     FontAttributes="Bold"/>
+              <Button Text="&#x2039;"
+                      Grid.Row="1"
+                      BackgroundColor="#0078D4"
+                      FontFamily="OpenSansSemibold"
+                      FontSize="40"
+                      Padding="-5,-10,0,0"
+                      WidthRequest="50"
+                      HeightRequest="50"
+                      CornerRadius="25"
+                      HorizontalOptions="End"
+                      Clicked="Button_Clicked"/>
+              <Image Source="dotnet_bot.png"
+                     Grid.Row="2"
+                     Aspect="AspectFit"/>
+
+              <!-- Semi-transparent background for better text readability -->
+              <BoxView Color="Black"
+                       Opacity="0.7"
+                       Grid.Row="3"
+                       VerticalOptions="End"
+                       HeightRequest="180"/>
+
+              <VerticalStackLayout Padding="30"
+                                   Grid.Row="3"
+                                   Spacing="10"
+                                   VerticalOptions="End">
+                     <Label Text="Edge-to-Edge Content"
+                            TextColor="White"
+                            FontSize="28"
+                            FontAttributes="Bold"/>
+                     <Label Text="This content extends behind system bars and notches, creating an immersive full-screen experience."
+                            TextColor="White"
+                            FontSize="18"
+                            LineBreakMode="WordWrap"/>
+              </VerticalStackLayout>
+       </Grid>
 </ContentPage>

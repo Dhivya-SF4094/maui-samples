@@ -1,59 +1,60 @@
 using Microsoft.Maui.Platform;
+using System.Collections.ObjectModel;
 
 namespace SafeAreaDemos.Views;
 
 public partial class Example2RespectAll : ContentPage
 {
-	// Set to true to show keyboard for second screenshot
-	private bool _showKeyboard = true;
+	public ObservableCollection<ChatMessage> Messages { get; set; }
 
 	public Example2RespectAll()
 	{
 		InitializeComponent();
-		
-		Loaded += OnPageLoaded;
+
+		// Initialize messages
+		Messages = new ObservableCollection<ChatMessage>
+		{
+			new ChatMessage { Text = "Hello! How can I help you?", IsIncoming = true },
+			new ChatMessage { Text = "I need some assistance", IsIncoming = false },
+			new ChatMessage { Text = "Sure! What do you need help with?", IsIncoming = true },
+			new ChatMessage { Text = "I'm here to answer any questions you have.", IsIncoming = true }
+		};
+
+		BindingContext = this;
 	}
 
-	private async void OnPageLoaded(object? sender, EventArgs e)
+	async void Button_Clicked(object sender, EventArgs e)
 	{
-		// Wait for page to fully render
-		await Task.Delay(1500);
-		
-		if (_showKeyboard)
+		await Navigation.PopAsync();
+	}
+
+	void OnSendButtonClicked(object sender, EventArgs e)
+	{
+		string message = MessageEntry.Text;
+
+		if (!string.IsNullOrWhiteSpace(message))
 		{
-			Console.WriteLine("========== SHOWING KEYBOARD ==========");
-			
-			// Focus the bottom entry to show keyboard avoidance
-			PhoneEntry.Focus();
-			
-#if ANDROID || IOS
-			// Wait a moment then force show keyboard
-			await Task.Delay(300);
-			
-			// Force show keyboard if focus didn't trigger it
-			if (PhoneEntry.Handler?.PlatformView is not null)
+			// Add the message to the collection
+			Messages.Add(new ChatMessage
 			{
-#if IOS
-				if (PhoneEntry.Handler.PlatformView is UIKit.UITextField textField)
-				{
-					textField.BecomeFirstResponder();
-					Console.WriteLine("BecomeFirstResponder called on PhoneEntry");
-				}
-#elif ANDROID
-				if (PhoneEntry.Handler.PlatformView is Android.Views.View view)
-				{
-					view.RequestFocus();
-					var inputMethodManager = (Android.Views.InputMethods.InputMethodManager?)view.Context?.GetSystemService(Android.Content.Context.InputMethodService);
-					inputMethodManager?.ShowSoftInput(view, Android.Views.InputMethods.ShowFlags.Implicit);
-					Console.WriteLine("ShowSoftInput called on PhoneEntry");
-				}
-#endif
-			}
-			
-			// Wait longer for keyboard animation to complete
-			await Task.Delay(1500);
-			Console.WriteLine("Keyboard should now be visible");
-#endif
+				Text = message,
+				IsIncoming = false
+			});
+
+			// Clear the entry after sending
+			MessageEntry.Text = string.Empty;
+
+			// Scroll to the last message
+			MessagesCollectionView.ScrollTo(Messages.Count - 1, position: ScrollToPosition.End, animate: true);
 		}
 	}
+}
+
+public class ChatMessage
+{
+	public string Text { get; set; } = string.Empty;
+	public bool IsIncoming { get; set; }
+	public Color BackgroundColor => IsIncoming ? Colors.LightBlue : Colors.LightGreen;
+	public LayoutOptions HorizontalAlignment => IsIncoming ? LayoutOptions.Start : LayoutOptions.End;
+	public CornerRadius CornerRadius => IsIncoming ? new CornerRadius(15, 15, 15, 0) : new CornerRadius(15, 15, 0, 15);
 }

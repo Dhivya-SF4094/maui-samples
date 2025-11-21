@@ -3,39 +3,81 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SafeAreaDemos.Views.Example2RespectAll"
              SafeAreaEdges="All"
+             Shell.NavBarIsVisible="False"
+             Background="Gray"
              Title="Respect All Safe Areas">
-    <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="30" RowSpacing="20">
-        <Label Grid.Row="0"
-               Text="Respect All Safe Areas"
-               FontSize="28"
-               FontAttributes="Bold" />
-        
-        <Label Grid.Row="1"
-               Text="SafeAreaEdges='All' ensures content avoids system bars, notches, and keyboard."
-               FontSize="18"
-               LineBreakMode="WordWrap" />
-        
-        <VerticalStackLayout Grid.Row="2" Spacing="15" VerticalOptions="End">
-            <Entry x:Name="NameEntry"
-                   Placeholder="Enter your name"
-                   FontSize="16"
-                   HeightRequest="50" />
-            <Entry x:Name="EmailEntry"
-                   Placeholder="Enter your email"
-                   FontSize="16"
-                   HeightRequest="50" />
-            <Entry x:Name="PhoneEntry"
-                   Placeholder="Enter your phone"
-                   FontSize="16"
-                   HeightRequest="50" />
-        </VerticalStackLayout>
-        
-        <Button Grid.Row="3"
-                Text="Submit" 
-                BackgroundColor="#0078D4" 
-                TextColor="White"
-                FontSize="18"
-                FontAttributes="Bold"
-                HeightRequest="60" />
-    </Grid>
+
+       <Grid RowDefinitions="Auto,Auto,*,Auto"
+             Padding="30"
+             Background="SkyBlue"
+             RowSpacing="20">
+              <HorizontalStackLayout Grid.Row="0"
+                                     Spacing="20">
+                     <Label
+                            Text="Respect All Safe Areas"
+                            FontSize="28"
+                            FontAttributes="Bold"/>
+                     <Button Text="&#x2039;"
+                             BackgroundColor="#0078D4"
+                             FontFamily="OpenSansSemibold"
+                             FontSize="40"
+                             Padding="-5,-10,0,0"
+                             WidthRequest="50"
+                             HeightRequest="50"
+                             CornerRadius="25"
+                             Clicked="Button_Clicked"/>
+              </HorizontalStackLayout>
+
+              <Label Grid.Row="1"
+                     Text="SafeAreaEdges='All' Content respect all safe area insets (Status bars, notches, home indicators, keyboard)."
+                     FontSize="18"
+                     LineBreakMode="WordWrap"/>
+              <Grid Grid.Row="2"
+                    RowDefinitions="*,Auto">
+                     <!-- Chat messages area using CollectionView -->
+                     <CollectionView x:Name="MessagesCollectionView"
+                                     Grid.Row="0"
+                                     ItemsSource="{Binding Messages}"
+                                     VerticalOptions="Fill">
+                            <CollectionView.ItemTemplate>
+                                   <DataTemplate>
+                                          <Border BackgroundColor="{Binding BackgroundColor}"
+                                                  Padding="12"
+                                                  StrokeThickness="0"
+                                                  HorizontalOptions="{Binding HorizontalAlignment}"
+                                                  MaximumWidthRequest="250"
+                                                  Margin="10,5">
+                                                 <Border.StrokeShape>
+                                                        <RoundRectangle CornerRadius="{Binding CornerRadius}"/>
+                                                 </Border.StrokeShape>
+                                                 <Label Text="{Binding Text}"
+                                                        FontSize="14"/>
+                                          </Border>
+                                   </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                     </CollectionView>
+
+                     <!-- Message input area -->
+                     <Grid Grid.Row="1"
+                           ColumnDefinitions="*,Auto"
+                           Padding="10"
+                           ColumnSpacing="10">
+                            <Entry x:Name="MessageEntry"
+                                   Grid.Column="0"
+                                   PlaceholderColor="Black"
+                                   Placeholder="Type a message..."
+                                   FontSize="16"
+                                   VerticalOptions="Center"/>
+                            <ImageButton Grid.Column="1"
+                                         Source="send.png"
+                                         BackgroundColor="#0078D4"
+                                         WidthRequest="50"
+                                         HeightRequest="50"
+                                         CornerRadius="25"
+                                         Padding="12"
+                                         Clicked="OnSendButtonClicked"
+                                         VerticalOptions="Center"/>
+                     </Grid>
+              </Grid>
+       </Grid>
 </ContentPage>

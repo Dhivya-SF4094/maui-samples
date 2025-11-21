@@ -3,29 +3,41 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SafeAreaDemos.Views.Example3KeyboardAware"
              Title="Keyboard-Aware Layout">
-    <Grid RowDefinitions="*,Auto" SafeAreaEdges="SoftInput">
+    <Grid RowDefinitions="*,Auto"
+          SafeAreaEdges="SoftInput">
         <ScrollView Grid.Row="0">
-            <VerticalStackLayout Padding="20" Spacing="10">
-                <Label Text="User Profile" FontSize="24" FontAttributes="Bold" />
-                <Entry Placeholder="Name" />
-                <Entry Placeholder="Email" />
-                <Entry Placeholder="Phone" />
-                <Editor Placeholder="Bio" HeightRequest="100" />
-                <Label Text="Tap the message box below to see keyboard avoidance"
-                       FontSize="14"
-                       TextColor="Gray"
-                       Margin="0,20,0,0"/>
+            <VerticalStackLayout Padding="20"
+                                 Spacing="10">
+                <Label Text="User Profile"
+                       FontSize="24"
+                       FontAttributes="Bold"/>
+                <Entry Placeholder="Name"/>
+                <Entry Placeholder="Email"/>
+                <Entry Placeholder="Phone"/>
+                <Border>
+                    <Editor Placeholder="Bio"
+                            HeightRequest="100"/>
+                </Border>
+                <HorizontalStackLayout Spacing="5">
+                    <Label Text="SafeAreaEdges - SoftInput: "
+                           FontAttributes="Bold"
+                           FontSize="14"/>
+                    <Label Text="Content always pads to avoid the keyboard/soft input overlay."
+                           FontSize="14"
+                           TextColor="Gray"/>
+                </HorizontalStackLayout>
+
             </VerticalStackLayout>
         </ScrollView>
-        
-        <Border Grid.Row="1" 
+
+        <Border Grid.Row="1"
                 BackgroundColor="LightGray"
                 Padding="20">
             <HorizontalStackLayout Spacing="10">
                 <Entry x:Name="MessageEntry"
-                       Placeholder="Type a message..." 
-                       HorizontalOptions="FillAndExpand" />
-                <Button Text="Send" />
+                       Placeholder="Type a message..."
+                       HorizontalOptions="Fill"/>
+                <Button Text="Send"/>
             </HorizontalStackLayout>
         </Border>
     </Grid>
